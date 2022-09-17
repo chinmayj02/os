@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.php": "php",
+        "*.js": "typescriptreact",
+        "ostream": "cpp"
+    }
+}
