@@ -122,50 +122,39 @@ x:  for(int i=1;i<=n;i++) if(cpu_time>=arrival_time[i]) arrival_status[i]=true;
 
 /* Sample output
 
-Enter number of processes:3
 
-Enter process id for process #1 : 1001
+Enter number of processes:5
 
-Enter arrival time for process #1 (process_id:1001): 2
+Enter arrival time for process #1 (process_id:0): 3
 
-Enter burst time for process #1 (process_id:1001): 5
+Enter burst time for process #1 (process_id:0): 1
 
-Enter process id for process #2 : 1002
+Enter arrival time for process #2 (process_id:0): 1
 
-Enter arrival time for process #2 (process_id:1002): 1
+Enter burst time for process #2 (process_id:0): 4
 
-Enter burst time for process #2 (process_id:1002): 7
+Enter arrival time for process #3 (process_id:0): 4
 
-Enter process id for process #3 : 1003
+Enter burst time for process #3 (process_id:0): 2
 
-Enter arrival time for process #3 (process_id:1003): 3
+Enter arrival time for process #4 (process_id:0): 0
 
-Enter burst time for process #3 (process_id:1003): 3
+Enter burst time for process #4 (process_id:0): 6
 
-**** Scheduling according to FCFS algorithm ****
+Enter arrival time for process #5 (process_id:0): 2
 
-process_id       arrival_time     burst_time       completion_time  wait_time        turnaround_time  
-1001             2                5                13               6                11               
-1002             1                7                8                0                7                
-1003             3                3                16               10               13               
+Enter burst time for process #5 (process_id:0): 3
 
-Average wait time for the processes using FCFS algorithm = 5.33333
-Average turnaround time for the processes using FCFS algorithm= 10.3333
-
-**** Scheduling according to SJF algorithm ****
+**** Scheduling according to SRTF algorithm ****
 
 process_id       arrival_time     burst_time       completion_time  wait_time        turnaround_time  
-1001             2                5                16               9                14               
-1002             1                7                8                0                7                
-1003             3                3                11               5                8                
+0                3                1                4                0                1                
+0                1                4                6                1                5                
+0                4                2                8                2                4                
+0                0                6                16               10               16               
+0                2                3                11               6                9                
 
-Average wait time for the processes = 4.66667
-Average turnaround time for the processes = 9.66667
-
-**** Comparison between FCFS and SJF ****
-
-algorithm        avg_wait_time    avg_turnaround_time
-FCFS             5.33333          10.3333          
-SJF              4.66667          9.66667 
+Average wait time for the processes using SRTF algorithm = 3.8
+Average turnaround time for the processes using SRTF algorithm= 7
 
 */
