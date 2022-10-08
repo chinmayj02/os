@@ -32,6 +32,8 @@ int main() {
         cout<<endl<<"Enter priority for process #"<<i<<" (process_id:"<<process_id[i]<<")[lower number higher priority]: ";
         cin>>priority[i];
     }
+
+
     // SRTF
     bool* completion_record = new bool[n]; //true if a process has completed execution
     bool* arrival_status = new bool[n]; // true is a process has already arrived
@@ -51,6 +53,9 @@ int main() {
     int process_with_min_remaining_burst_time = 0;
 x:  for (int i = 1; i <= n; i++) if (cpu_time >= arrival_time[i]) arrival_status[i] = true;
     int min_remaining_burst_time = infinity;
+
+/*****************************************************************
+
     for (int i = n; i >= 1; i--) {
         // finding process with min remaining burst time that is alaready arrived
         if (arrival_status[i] == true && completion_record[i] != true) {
@@ -131,6 +136,7 @@ x:  for (int i = 1; i <= n; i++) if (cpu_time >= arrival_time[i]) arrival_status
     cout << "Average wait time for the processes using SRTF algorithm = " << srtf_avg_wait_and_tat[0];
     cout << endl << "Average turnaround time for the processes using SRTF algorithm= " << srtf_avg_wait_and_tat[1] << endl;
   
+  *******************************************************************/
     // RR
     int time_quantum;
     cout<<"\nFor Round Robin algorithm, enter time quantunm: ";
@@ -150,14 +156,15 @@ x:  for (int i = 1; i <= n; i++) if (cpu_time >= arrival_time[i]) arrival_status
     cpu_time = 0;
     count = 0; // count of executed processes
     flag = 0;
-    process_with_min_remaining_burst_time = 0;
-x:  for (int i = 1; i <= n; i++) if (cpu_time >= arrival_time[i]) arrival_status[i] = true;
+  //  process_with_min_remaining_burst_time = 0;
+x1:  for (int i = 1; i <= n; i++) if (cpu_time >= arrival_time[i]) arrival_status[i] = true;
     min_remaining_burst_time = infinity;
     int highest_priority=infinity;
     for (int i = n; i >= 1; i--) {
         // finding process with that is alaready arrived and has high priority
         if (arrival_status[i] == true && completion_record[i] != true) {
             if (priority[i] < highest_priority) {
+                highest_priority = priority[i];
                 currently_exec_process = i;
                 flag = 1;
             }
@@ -171,7 +178,7 @@ x:  for (int i = 1; i <= n; i++) if (cpu_time >= arrival_time[i]) arrival_status
     // which means no process has arrival time equal to initial cpu_time(0)
     if (!flag) {
         cpu_time++;
-        goto x;
+        goto x1;
     }
     //check if the first process to be executed has arrival time as initial cpu_time(0)
     // if not,update cpu_time to the arrival time of the first process
@@ -182,21 +189,25 @@ x:  for (int i = 1; i <= n; i++) if (cpu_time >= arrival_time[i]) arrival_status
     }
     if(remaining_burst_time[currently_exec_process]>=time_quantum){
         cpu_time+=time_quantum;
+        remaining_burst_time[currently_exec_process]=remaining_burst_time[currently_exec_process]-time_quantum;
     }
     count++;
     // looping until all processes are completed
-    for (int i = 1; i <= n; i++) if (completion_record[i] != true) goto x;
+    for (int i = 1; i <= n; i++) if (completion_record[i] != true) goto x1;
     // displaying results in tabular form
-    cout << endl << "**** Scheduling according to SRTF algorithm ****" << endl;
-    const char space = ' ';
+
+      const char space = ' ';
     const int width = 17;
+    cout << endl << "**** Scheduling according to RR algorithm ****" << endl;
     cout << endl << left << setw(width) << setfill(space) << "process_id";
     cout << left << setw(width) << setfill(space) << "arrival_time";
     cout << left << setw(width) << setfill(space) << "burst_time";
     cout << left << setw(width) << setfill(space) << "priority";
     cout << left << setw(width) << setfill(space) << "completion_time";
     cout << left << setw(width) << setfill(space) << "wait_time";
-    cout << left << setw(width) << setfill(space) << "turnaround_time";
+    // cout << left << setw(width) << setfill(space) << "turnaround_time";
+        cout << left << setw(width) << setfill(space) << "remBtime";
+
     for (int i = 1; i <= n; i++) {
         cout << endl;
         cout << left << setw(width) << setfill(space) << process_id[i];
@@ -205,19 +216,21 @@ x:  for (int i = 1; i <= n; i++) if (cpu_time >= arrival_time[i]) arrival_status
         cout << left << setw(width) << setfill(space) << priority[i];
         cout << left << setw(width) << setfill(space) << completion_time[i];
         cout << left << setw(width) << setfill(space) << wait_time[i];
-        cout << left << setw(width) << setfill(space) << turnaround_time[i];
+        // cout << left << setw(width) << setfill(space) << turnaround_time[i];
+                cout << left << setw(width) << setfill(space) << remaining_burst_time[i];
+
     }
-    // final results of SRTF
-    int wait_time_sum = 0;
-    int turnaround_time_sum = 0;
+    // final results of RR
+    int  wait_time_sum = 0;
+    int  turnaround_time_sum = 0;
     for (int i = 1; i <= n; i++) {
         wait_time_sum += wait_time[i];
         turnaround_time_sum += turnaround_time[i];
     }
-    float srtf_avg_wait_and_tat[2] = { (float)wait_time_sum / n,(float)turnaround_time_sum / n };
+    float rr_avg_wait_and_tat[2] = { (float)wait_time_sum / n,(float)turnaround_time_sum / n };
     cout << endl << endl;
-    cout << "Average wait time for the processes using SRTF algorithm = " << srtf_avg_wait_and_tat[0];
-    cout << endl << "Average turnaround time for the processes using SRTF algorithm= " << srtf_avg_wait_and_tat[1] << endl;
+    cout << "Average wait time for the processes using RR algorithm = " << rr_avg_wait_and_tat[0];
+    cout << endl << "Average turnaround time for the processes using RR algorithm= " << rr_avg_wait_and_tat[1] << endl;
    
     //int p;
     //cin >> p;

@@ -46,7 +46,12 @@ x:  int min_arrival_time=infinity;
     //check if the first process to be executed has arrival time as initial cpu_time(0)
     // if not,update cpu_time to the arrival time of the first process
     if(count==0 && arrival_time[exec_process]!=0) cpu_time=arrival_time[exec_process]; 
-    // execute process with min arrival_time
+    // check idle state
+    if(arrival_time[exec_process]>cpu_time){
+        cpu_time++;
+        goto x;
+    } 
+    // execute process with min arrival_time 
     completion_record[exec_process]=true;
     cpu_time+=burst_time[exec_process];
     completion_time[exec_process]=cpu_time;
@@ -116,12 +121,18 @@ x1: for(int i=1;i<=n;i++) if(cpu_time>=arrival_time[i]) arrival_status[i]=true;
     }
     // execute process with min burst_time
     if(count==0 && arrival_time[exec_process]!=0) cpu_time=arrival_time[exec_process];
+     // check idle state
+    if(arrival_time[exec_process]>cpu_time){
+        cpu_time++;
+        goto x1;
+    } 
     completion_record[exec_process]=true;
     cpu_time+=burst_time[exec_process];
     completion_time[exec_process]=cpu_time;
     turnaround_time[exec_process]=completion_time[exec_process]-arrival_time[exec_process];
     wait_time[exec_process]=completion_time[exec_process]-burst_time[exec_process]-arrival_time[exec_process];
     count++;
+    flag=0;
     // looping until all processes are completed
     for(int i=1;i<=n;i++) if(completion_record[i]!=true) goto x1;
     // displaying results in tabular form
