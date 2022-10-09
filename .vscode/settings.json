@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.php": "php",
+        "*.js": "typescriptreact",
+        "iomanip": "cpp"
+    }
+}
