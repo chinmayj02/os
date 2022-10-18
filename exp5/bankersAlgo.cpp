@@ -98,7 +98,7 @@ y:  while(i<no_of_processes){
     cout<<endl;   
 }
 
-/*  OUTPUT
+/*  OUTPUT for safe state
 
 Enter number of processes: 5
 
@@ -138,5 +138,38 @@ Process 2  executed
 Process 3  executed
 
 System is in safe state and the safe sequence is: 1 4 5 2 3
+
+*/
+
+/* output for unsafe state
+ 
+Enter number of processes: 5
+
+Enter number of resources: 4
+
+Enter allocation matrix:
+0 1 1 0
+1 2 3 1
+1 3 6 5
+0 6 3 2
+0 0 1 4
+
+Enter maximum need matrix:
+0 2 1 0
+1 6 5 2
+2 3 6 6
+0 6 5 2
+0 6 5 6
+
+The current need matrix:
+
+0 1 0 0 
+0 4 2 1 
+1 0 0 1 
+0 0 2 0 
+0 6 4 2 
+Enter available resources: 0 0 0 0
+
+System is in unsafe state
 
 */
