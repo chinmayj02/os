@@ -1,17 +1,22 @@
 class A extends Thread{
     
     public void run(){
-        for(int i=1;i<=10;i++) System.out.println("Class A iteration #"+i);
+        // for(int i=1;i<=10;i++) System.out.println("Class A iteration #"+i);
+        System.out.println("This is thread class A ");
     }
 }
 class B extends Thread{
     public void run(){
-        for(int i=1;i<=10;i++) System.out.println("Class B iteration #"+i);
+        // for(int i=1;i<=10;i++) System.out.println("Class B iteration #"+i);
+        System.out.println("This is thread class B ");
+
     }
 }
 class C extends Thread{
     public void run(){
-        for(int i=1;i<=10;i++) System.out.println("Class C iteration #"+i);
+        // for(int i=1;i<=10;i++) System.out.println("Class C iteration #"+i);
+        System.out.println("This is thread class C ");
+
     }
 }
 public class App{
@@ -27,7 +32,9 @@ public class App{
         t2.start();
         t3.start();
         
-        for(int i=1;i<=100;i++) System.out.println("Main class iteration #"+i);
+        // for(int i=1;i<=100;i++) System.out.println("Main class iteration #"+i);
+        System.out.println("This is main thread class");
+
     }
 }
 /*

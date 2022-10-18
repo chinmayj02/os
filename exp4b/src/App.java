@@ -1,17 +1,16 @@
 class A implements Runnable{
-    
     public void run(){
-        for(int i=1;i<=10;i++) System.out.println("Class A iteration #"+i);
+        // for(int i=1;i<=10;i++) System.out.println("Class A iteration #"+i);
     }
 }
 class B implements Runnable{
     public void run(){
-        for(int i=1;i<=10;i++) System.out.println("Class B iteration #"+i);
+        // for(int i=1;i<=10;i++) System.out.println("Class B iteration #"+i);
     }
 }
 class C implements Runnable{
     public void run(){
-        for(int i=1;i<=10;i++) System.out.println("Class C iteration #"+i);
+        // for(int i=1;i<=10;i++) System.out.println("Class C iteration #"+i);
     }
 }
 public class App{
