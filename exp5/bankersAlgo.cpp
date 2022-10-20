@@ -28,28 +28,6 @@ int main(){
             cout<<current_need[i][j]<<" ";
         }
     }
-
-    //  cout<<endl<<"The allocation matrix:\n";
-    // for(int i=0;i<no_of_processes;i++){
-    //     cout<<endl;
-    //     for(int j=0;j<no_of_resources;j++){
-    //         // current_need[i][j]=max_need[i][j]-allocation[i][j];
-    //         // cout<<"max need= "<<max_need[i][j]<<" allocation= "<<allocation[i][j];
-    //         cout<<allocation[i][j]<<" ";
-    //     }
-    // }
-
-    // cout<<endl<<"The need matrix:\n";
-    // for(int i=0;i<no_of_processes;i++){
-    //     cout<<endl;
-    //     for(int j=0;j<no_of_resources;j++){
-    //         // current_need[i][j]=max_need[i][j]-allocation[i][j];
-    //         // cout<<"max need= "<<max_need[i][j]<<" allocation= "<<allocation[i][j];
-    //         cout<<max_need[i][j]<<" ";
-    //     }
-    // }
-
-
     int available[no_of_resources];
     cout<<endl<<"Enter available resources: ";
     for(int i=0;i<no_of_resources;i++)cin>>available[i];
