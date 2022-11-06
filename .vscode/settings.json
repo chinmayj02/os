@@ -5,6 +5,7 @@
         "iomanip": "cpp",
         "iostream": "cpp",
         "new": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "types.h": "c"
     }
 }
