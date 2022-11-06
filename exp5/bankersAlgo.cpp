@@ -24,7 +24,6 @@ int main(){
         cout<<endl;
         for(int j=0;j<no_of_resources;j++){
             current_need[i][j]=max_need[i][j]-allocation[i][j];
-            // cout<<"max need= "<<max_need[i][j]<<" allocation= "<<allocation[i][j];
             cout<<current_need[i][j]<<" ";
         }
     }
