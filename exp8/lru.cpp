@@ -3,61 +3,79 @@
 #include <iomanip>
 
 using namespace std;
-
-int main(void)
+int main()
 {
-	int n, m, hit = 0, miss = 0, flag = 0, head = 0;
-	cout << "Enter number of frames: ";
-	cin >> n;
-	cin.ignore();
-	vector<int> ref_str;
-	cout << "Enter the reference string: ";
-	while (cin.peek() != '\n')
-	{
-		int x;
-		cin >> x;
-		ref_str.push_back(x);
-	}
-	int *frames = new int[n];
-	for (int i = 0; i < n; i++)
-		frames[i] = -1;
-	vector<int>::iterator v;
-	for (v = ref_str.begin(); v != ref_str.end(); v++)
-	{
-		cout << "Iteration #" << v - ref_str.begin() + 1;
-		for (int j = 0; j < n; j++)
-		{
-			cout << setw(3) << frames[j] << " ";
-			if (frames[j] == *v)
-			{
-				hit++;
-				flag = 1;
-			}
-		}
-		cout << endl;
-		if (flag)
-		{
-			flag = 0;
-			continue;
-		}
-		miss++;
-		frames[head++] = *v;
-		if (head == n)
-			head = 0;
-	}
-	cout << "\nHits= " << hit << "\nMiss= " << miss;
-	cout << "\nHit ratio= " << (float)hit / (float)ref_str.size();
+    int n, i, hit = 0, miss = 0;
+    cout << "\nEnter no of frames: ";
+    cin >> n;
+    cin.ignore();
+    vector<int> frames(n);
+    vector<int> fcount(n);
+    for (i = 0; i < n; i++)
+    {
+        frames[i] = -1;
+        fcount[i] = 0;
+    }
+    cout << "\nEnter the Reference String :";
+    vector<int> ref_str;
+    while (cin.peek() != '\n')
+    {
+        int x;
+        cin >> x;
+        ref_str.push_back(x);
+    }
+    i = 0;
+    while (i < ref_str.size())
+    {
+        int j = 0, flag = 0;
+        while (j < n)
+        {
+            if (ref_str[i] == frames[j])
+            {
+                flag = 1;
+                hit++;
+                fcount[j] = i + 1;
+            }
+            j++;
+        }
+        j = 0;
+        cout << endl
+             << "Iteration #" << i + 1 << ": ";
+        if (!flag)
+        {
+            miss++;
+            int min = 0, k = 0;
+            while (k < n)
+            {
+                if (fcount[min] > fcount[k])
+                    min = k;
+                k++;
+            }
+            frames[min] = ref_str[i];
+            fcount[min] = i + 1;
+        }
+        while (j < n)
+        {
+            cout << setw(3) << frames[j];
+            j++;
+        }
+        i++;
+    }
+    cout << "\nHits= " << hit << "\nMiss= " << miss;
+    cout << "\nHit ratio= " << (float)hit / (float)ref_str.size()<<endl;
 }
 
-// Enter number of frames: 3
-// Enter the reference string: 1 2 3 1 2 3
-// Iteration #1 -1  -1  -1
-// Iteration #2  1  -1  -1
-// Iteration #3  1   2  -1
-// Iteration #4  1   2   3
-// Iteration #5  1   2   3
-// Iteration #6  1   2   3
+// Enter no of frames: 3
 
-// Hits= 3
-// Miss= 3
-// Hit ratio= 0.5
+// Enter the Reference String :15 2 5 4 2 4 6
+
+// Iteration #1:  15 -1 -1
+// Iteration #2:  15  2 -1
+// Iteration #3:  15  2  5
+// Iteration #4:   4  2  5
+// Iteration #5:   4  2  5
+// Iteration #6:   4  2  5
+// Iteration #7:   4  2  6
+// Hits= 2
+// Miss= 5
+// Hit ratio= 0.285714
