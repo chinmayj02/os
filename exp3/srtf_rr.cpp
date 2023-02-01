@@ -78,7 +78,7 @@ x:  for (int i = 1; i <= n; i++) if (cpu_time >= arrival_time[i]) arrival_status
     }
     //check if the first process to be executed has arrival time as initial cpu_time(0)
     // if not,update cpu_time to the arrival time of the first process
-    if (count == 0 && arrival_time[currently_exec_process] != 0) cpu_time = arrival_time[currently_exec_process];
+   // if (count == 0 && arrival_time[currently_exec_process] != 0) cpu_time = arrival_time[currently_exec_process];
     // check if the process is executing for the first time
     if (burst_time[currently_exec_process] == remaining_burst_time[currently_exec_process]) {
         wait_time[currently_exec_process] = cpu_time - arrival_time[currently_exec_process];

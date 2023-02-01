@@ -1,185 +1,50 @@
-#include <windows.h>
-#include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <libudev.h>
 
-// Namespace
-using namespace std;
-
-// Main
-int main()
+int main(void)
 {
-	// Program
-	cout << "USB Device Lister." << endl;
+    struct udev *udev;
+    struct udev_enumerate *enumerate;
+    struct udev_list_entry *devices, *dev_list_entry;
 
-	// Get Number Of Devices
-	UINT nDevices = 0;
-	GetRawInputDeviceList( NULL, &nDevices, sizeof( RAWINPUTDEVICELIST ) );
+    /* create udev object */
+    udev = udev_new();
+    if (!udev) {
+        fprintf(stderr, "Can't create udev\n");
+        return 1;
+    }
 
-	// Got Any?
-	if( nDevices < 1 )
-	{
-		// Exit
-		cout << "ERR: 0 Devices?";
-		cin.get();
-		return 0;
-	}
-	
-	// Allocate Memory For Device List
-	PRAWINPUTDEVICELIST pRawInputDeviceList;
-	pRawInputDeviceList = new RAWINPUTDEVICELIST[ sizeof( RAWINPUTDEVICELIST ) * nDevices ];
+    /* create a list of the devices in the 'usb' subsystem */
+    enumerate = udev_enumerate_new(udev);
+    udev_enumerate_add_match_subsystem(enumerate, "usb");
+    udev_enumerate_scan_devices(enumerate);
+    devices = udev_enumerate_get_list_entry(enumerate);
 
-	// Got Memory?
-	if( pRawInputDeviceList == NULL )
-	{
-		// Error
-		cout << "ERR: Could not allocate memory for Device List.";
-		cin.get();
-		return 0;
-	}
-	
-	// Fill Device List Buffer
-	int nResult;
-	nResult = GetRawInputDeviceList( pRawInputDeviceList, &nDevices, sizeof( RAWINPUTDEVICELIST ) );
+    /* loop through the devices */
+    udev_list_entry_foreach(dev_list_entry, devices) {
+        const char *path;
+        struct udev_device *dev;
 
-	// Got Device List?
-	if( nResult < 0 )
-	{
-		// Clean Up
-		delete [] pRawInputDeviceList;
+        /* get the device's path and create a udev device object */
+        path = udev_list_entry_get_name(dev_list_entry);
+        dev = udev_device_new_from_syspath(udev, path);
 
-		// Error
-		cout << "ERR: Could not get device list.";
-		cin.get();
-		return 0;
-	}
+        /* print device information */
+        printf("Device Node Path: %s\n", udev_device_get_devnode(dev));
+        printf("Product Name: %s\n", udev_device_get_sysattr_value(dev, "product"));
+        printf("Vendor ID: %s\n", udev_device_get_sysattr_value(dev, "idVendor"));
+        printf("Product ID: %s\n", udev_device_get_sysattr_value(dev, "idProduct"));
 
-	// Loop Through Device List
-	for( UINT i = 0; i < nDevices; i++ )
-	{
-		// Get Character Count For Device Name
-		UINT nBufferSize = 0;
-		nResult = GetRawInputDeviceInfo( pRawInputDeviceList[i].hDevice, // Device
-										 RIDI_DEVICENAME,				 // Get Device Name
-										 NULL,							 // NO Buff, Want Count!
-										 &nBufferSize );				 // Char Count Here!
+        /* free the device object */
+        udev_device_unref(dev);
+    }
 
-		// Got Device Name?
-		if( nResult < 0 )
-		{
-			// Error
-			cout << "ERR: Unable to get Device Name character count.. Moving to next device." << endl << endl;
+    /* free the enumerate object */
+    udev_enumerate_unref(enumerate);
 
-			// Next
-			continue;
-		}
+    /* free the udev object */
+    udev_unref(udev);
 
-		// Allocate Memory For Device Name
-		WCHAR* wcDeviceName = new WCHAR[ nBufferSize + 1 ];
-		
-		// Got Memory
-		if( wcDeviceName == NULL )
-		{
-			// Error
-			cout << "ERR: Unable to allocate memory for Device Name.. Moving to next device." << endl << endl;
-
-			// Next
-			continue;
-		}
-
-		// Get Name
-		nResult = GetRawInputDeviceInfo( pRawInputDeviceList[i].hDevice, // Device
-										 RIDI_DEVICENAME,				 // Get Device Name
-										 wcDeviceName,					 // Get Name!
-										 &nBufferSize );				 // Char Count
-
-		// Got Device Name?
-		if( nResult < 0 )
-		{
-			// Error
-			cout << "ERR: Unable to get Device Name.. Moving to next device." << endl << endl;
-
-			// Clean Up
-			delete [] wcDeviceName;
-
-			// Next
-			continue;
-		}
-
-		// Set Device Info & Buffer Size
-		RID_DEVICE_INFO rdiDeviceInfo;
-		rdiDeviceInfo.cbSize = sizeof( RID_DEVICE_INFO );
-		nBufferSize = rdiDeviceInfo.cbSize;
-
-		// Get Device Info
-		nResult = GetRawInputDeviceInfo( pRawInputDeviceList[i].hDevice,
-										 RIDI_DEVICEINFO,
-										 &rdiDeviceInfo,
-										 &nBufferSize );
-
-		// Got All Buffer?
-		if( nResult < 0 )
-		{
-			// Error
-			cout << "ERR: Unable to read Device Info.. Moving to next device." << endl << endl;
-
-			// Next
-			continue;
-		}
-
-		// Mouse
-		if( rdiDeviceInfo.dwType == RIM_TYPEMOUSE )
-		{
-			// Current Device
-			cout << endl << "Displaying device " << i+1 << " information. (MOUSE)" << endl;
-			wcout << L"Device Name: " << wcDeviceName << endl;
-			cout << "Mouse ID: " << rdiDeviceInfo.mouse.dwId << endl;
-			cout << "Mouse buttons: " << rdiDeviceInfo.mouse.dwNumberOfButtons << endl;
-			cout << "Mouse sample rate (Data Points): " << rdiDeviceInfo.mouse.dwSampleRate << endl;
-			if( rdiDeviceInfo.mouse.fHasHorizontalWheel )
-			{
-				cout << "Mouse has horizontal wheel" << endl;
-			}
-			else
-			{
-				cout << "Mouse does not have horizontal wheel" << endl;
-			}
-		}
-
-		// Keyboard
-		else if( rdiDeviceInfo.dwType == RIM_TYPEKEYBOARD )
-		{
-			// Current Device
-			cout << endl << "Displaying device " << i+1 << " information. (KEYBOARD)" << endl;
-			wcout << L"Device Name: " << wcDeviceName << endl;
-			cout << "Keyboard mode: " << rdiDeviceInfo.keyboard.dwKeyboardMode << endl;
-			cout << "Number of function keys: " << rdiDeviceInfo.keyboard.dwNumberOfFunctionKeys << endl;
-			cout << "Number of indicators: " << rdiDeviceInfo.keyboard.dwNumberOfIndicators << endl;
-			cout << "Number of keys total: " << rdiDeviceInfo.keyboard.dwNumberOfKeysTotal << endl;
-			cout << "Type of the keyboard: " << rdiDeviceInfo.keyboard.dwType << endl;
-			cout << "Subtype of the keyboard: " << rdiDeviceInfo.keyboard.dwSubType << endl;
-		}
-
-		// Some HID
-		else // (rdi.dwType == RIM_TYPEHID)
-		{
-			// Current Device
-			cout << endl << "Displaying device " << i+1 << " information. (HID)" << endl;
-			wcout << L"Device Name: " << wcDeviceName << endl;
-			cout << "Vendor Id:" << rdiDeviceInfo.hid.dwVendorId << endl;
-			cout << "Product Id:" << rdiDeviceInfo.hid.dwProductId << endl;
-			cout << "Version No:" << rdiDeviceInfo.hid.dwVersionNumber << endl;
-			cout << "Usage for the device: " << rdiDeviceInfo.hid.usUsage << endl;
-			cout << "Usage Page for the device: " << rdiDeviceInfo.hid.usUsagePage << endl;
-		}
-
-		// Delete Name Memory!
-		delete [] wcDeviceName;
-	}
-
-	// Clean Up - Free Memory
-	delete [] pRawInputDeviceList;
-
-	// Exit
-	cout << endl << "Finnished.";
-	cin.get();
-	return 0;
+    return 0;
 }
